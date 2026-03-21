@@ -451,6 +451,9 @@
     .profile-field.full { grid-column: 1; }
   }
 
+  /* ---- SCROLL OFFSET for fixed nav ---- */
+  section, #session-detail, #profile { scroll-margin-top: 68px; }
+
   /* ---- ANIMATIONS ---- */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(24px); }
@@ -462,20 +465,155 @@
   .delay-3 { animation-delay: .4s; }
   .delay-4 { animation-delay: .55s; }
 
-  /* ---- RESPONSIVE ---- */
-  @media (max-width: 768px) {
-    nav { padding: 0 20px; }
-    .nav-links { display: none; }
-    .hero { padding: 80px 20px 60px; }
-    section { padding: 70px 20px; }
-    .phases-grid { grid-template-columns: 1fr; gap: 8px; }
-    .warmup-grid { grid-template-columns: 1fr; }
+  /* ---- HAMBURGER MENU ---- */
+  .nav-hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer;
+    padding: 10px; background: none; border: none;
+    min-width: 44px; min-height: 44px; align-items: center; justify-content: center;
+  }
+  .nav-hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--white); border-radius: 2px; transition: all .25s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none; position: fixed; top: 60px; left: 0; right: 0; z-index: 99;
+    background: rgba(8,15,10,0.97); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(232,160,32,0.2);
+    flex-direction: column; padding: 8px 0 16px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-size: 14px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--off-white); text-decoration: none;
+    padding: 16px 24px; min-height: 52px; display: flex; align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: color .15s, background .15s;
+  }
+  .mobile-menu a:active { color: var(--gold); background: rgba(232,160,32,0.08); }
+
+  /* ---- MOBILE TRACKER CARDS (hidden on desktop) ---- */
+  .tracker-cards { display: none; }
+  .tracker-card-row {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    padding: 14px 16px; margin-bottom: 8px;
+  }
+  .tracker-card-row.current-week { border-color: var(--gold); }
+  .tcr-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .tcr-wk { font-family: 'Teko', sans-serif; font-size: 28px; font-weight: 600; color: var(--gold); line-height: 1; min-width: 40px; }
+  .tcr-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tcr-field { display: flex; flex-direction: column; gap: 4px; }
+  .tcr-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray); }
+  .tcr-input {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    color: var(--white); padding: 10px 12px; font-size: 16px;
+    font-family: 'DM Sans', sans-serif; width: 100%; transition: border-color .15s;
+  }
+  .tcr-input:focus { outline: none; border-color: var(--gold); background: rgba(232,160,32,0.05); }
+  .tcr-note { grid-column: 1 / -1; }
+
+  /* ---- RESPONSIVE: TABLET ---- */
+  @media (max-width: 900px) {
+    .tips-grid { grid-template-columns: repeat(2, 1fr); }
     .tracker-stats { grid-template-columns: repeat(2, 1fr); }
-    .tips-grid { grid-template-columns: 1fr; gap: 8px; }
-    .block-item { grid-template-columns: 60px 90px 1fr; gap: 12px; }
-    footer { flex-direction: column; gap: 12px; text-align: center; }
-    #session-detail { padding: 0 20px; }
-    .session-detail-inner { padding: 28px 20px; }
+  }
+
+  /* ---- RESPONSIVE: MOBILE ---- */
+  @media (max-width: 768px) {
+    /* Nav */
+    nav { padding: 0 16px; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+
+    /* Hero */
+    .hero { padding: 80px 20px 52px; min-height: auto; }
+    .hero h1 { font-size: clamp(60px, 16vw, 96px); }
+    .hero-sub { font-size: 15px; line-height: 1.65; margin-bottom: 28px; max-width: 100%; }
+    .hero-diamond { width: 260px; height: 260px; right: -70px; opacity: 0.4; }
+    .hero-stats { gap: 20px; margin-bottom: 32px; }
+    .hero-stat-num { font-size: 32px; }
+    .hero-stat-lbl { font-size: 10px; }
+    .hero-cta { width: 100%; justify-content: center; padding: 17px 24px; font-size: 13px; clip-path: none; border-radius: 2px; }
+
+    /* Sections */
+    section { padding: 56px 20px; }
+    h2 { font-size: clamp(38px, 10vw, 54px); }
+    .section-intro { font-size: 15px; margin-bottom: 36px; }
+
+    /* Profile */
+    #profile { padding: 56px 20px; }
+    .profile-card { grid-template-columns: 1fr; gap: 20px; padding: 20px; }
+    .profile-avatar-wrap { flex-direction: row; align-items: center; justify-content: flex-start; gap: 20px; }
+    .profile-avatar { width: 72px; height: 72px; font-size: 28px; flex-shrink: 0; border-width: 2px; }
+    .profile-jersey { font-size: 32px; }
+    .profile-name-display { font-size: clamp(22px, 7vw, 38px); margin-bottom: 16px; }
+    .profile-fields { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .profile-field.full { grid-column: 1 / -1; }
+    .profile-input { font-size: 16px; padding: 12px 14px; }
+    .profile-save-btn { width: 100%; justify-content: center; padding: 16px 24px; clip-path: none; border-radius: 2px; }
+    .profile-field:last-child { flex-direction: column; align-items: stretch; }
+    .profile-status { margin-left: 0; margin-top: 8px; text-align: center; }
+
+    /* Phases */
+    .phases-grid { grid-template-columns: 1fr; gap: 6px; }
+    .phase-card { padding: 22px 18px; }
+    .phase-card h3 { font-size: 24px; }
+
+    /* Session detail */
+    #session-detail { padding: 0 20px; margin-bottom: 56px; }
+    .session-detail-inner { padding: 20px 16px; }
+    .session-tabs { margin-bottom: 24px; }
+    .session-tab { padding: 12px 18px; font-size: 12px; flex: 1; text-align: center; }
+    .session-title { font-size: 20px; margin-bottom: 16px; }
+    .block-item { grid-template-columns: auto 1fr; grid-template-rows: auto auto; gap: 4px 12px; padding: 14px 0; }
+    .block-item > div:first-child { grid-row: 1; grid-column: 1; }
+    .block-item > div:nth-child(2) { grid-row: 1; grid-column: 2; align-self: center; }
+    .block-item > div:last-child { grid-row: 2; grid-column: 1 / -1; }
+    .block-time { font-size: 22px; }
+    .block-name { font-size: 14px; }
+    .block-detail { font-size: 13px; }
+
+    /* Warmup */
+    .warmup-grid { grid-template-columns: 1fr; gap: 8px; }
+    .warmup-step { padding: 14px 16px; min-height: 64px; }
+    .ws-num { width: 40px; height: 40px; font-size: 20px; flex-shrink: 0; }
+    .ws-name { font-size: 15px; }
+    .ws-detail { font-size: 13px; }
+    .warmup-progress { gap: 10px; }
+    .wp-label { min-width: 48px; }
+
+    /* Tracker — swap table for cards on mobile */
+    .tracker-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 28px; }
+    .ts-card { padding: 14px 16px; }
+    .ts-num { font-size: 30px; }
+    .ts-lbl { font-size: 10px; }
+    .tracker-table-wrap { display: none; }
+    .tracker-cards { display: block; }
+
+    /* Tips */
+    #tips { padding: 56px 0 !important; }
+    #tips > div { padding: 0 20px !important; }
+    .tips-grid { grid-template-columns: 1fr; gap: 6px; }
+    .tip-card { padding: 20px; }
+    .tip-icon { font-size: 24px; margin-bottom: 12px; }
+    .tip-title { font-size: 20px; }
+    .tip-text { font-size: 14px; }
+
+    /* Footer */
+    footer { flex-direction: column; gap: 10px; text-align: center; padding: 28px 20px; }
+  }
+
+  /* ---- RESPONSIVE: SMALL ---- */
+  @media (max-width: 400px) {
+    .hero h1 { font-size: 54px; }
+    .hero-stats { gap: 14px; }
+    .hero-stat-num { font-size: 28px; }
+    .profile-fields { grid-template-columns: 1fr; }
+    .tracker-stats { gap: 8px; }
+    .ts-num { font-size: 26px; }
   }
 </style>
 </head>
@@ -492,7 +630,17 @@
     <a href="#tracker">Progress</a>
     <a href="#tips">Tips</a>
   </div>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#profile" onclick="closeMenu()">Player</a>
+  <a href="#phases" onclick="closeMenu()">Training Plan</a>
+  <a href="#warmup" onclick="closeMenu()">Warm-Up</a>
+  <a href="#tracker" onclick="closeMenu()">Progress</a>
+  <a href="#tips" onclick="closeMenu()">Tips</a>
+</div>
 
 <!-- HERO -->
 <div class="hero">
@@ -699,6 +847,7 @@
       <tbody id="tracker-body"></tbody>
     </table>
   </div>
+  <div class="tracker-cards" id="tracker-cards"></div>
 </section>
 
 <!-- TIPS -->
@@ -833,6 +982,18 @@ const WARMUP_STEPS = [
   { name: "Hip rotation bat swings", detail: "Hold bat horizontal, rotate hips 20 times", cat: "Movement", time: "40 sec" },
   { name: "Light throw warm-up", detail: "10 easy tosses from 15ft. Elbow up, no effort.", cat: "Arm care", time: "2 min" },
 ];
+
+// ---- MOBILE MENU ----
+function toggleMenu() {
+  const btn = document.getElementById('hamburger');
+  const menu = document.getElementById('mobile-menu');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+}
 
 // ---- SUPABASE CONFIG ----
 // Replace these two values after creating your Supabase project
@@ -1019,21 +1180,24 @@ function resetWarmup() {
 }
 
 // ---- TRACKER ----
-function renderTracker() {
-  const phaseOf = w => w <= 5 ? 1 : w <= 10 ? 2 : 3;
-  const phaseTag = p => p === 1 ? `<span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border:1px solid rgba(96,165,250,0.4);color:#60A5FA;">Foundation</span>`
+function phaseOf(w) { return w <= 5 ? 1 : w <= 10 ? 2 : 3; }
+function phaseTag(p) {
+  return p === 1 ? `<span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border:1px solid rgba(96,165,250,0.4);color:#60A5FA;">Foundation</span>`
     : p === 2 ? `<span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border:1px solid rgba(74,222,128,0.4);color:#4ADE80;">Development</span>`
     : `<span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border:1px solid rgba(232,160,32,0.4);color:var(--gold);">Game Prep</span>`;
+}
 
+function renderTracker() {
   const now = new Date();
   const start = new Date('2026-03-21');
   const currentWk = Math.max(0, Math.min(Math.floor((now-start)/(7*24*3600*1000)), 14));
 
-  let html = '';
+  // Desktop table
+  let tableHtml = '';
   for (let i = 0; i < 15; i++) {
     const w = i+1;
     const d = trackerData[i];
-    html += `<tr class="${i===currentWk?'current-week':''}">
+    tableHtml += `<tr class="${i===currentWk?'current-week':''}">
       <td class="wk-num">${w}</td>
       <td>${phaseTag(phaseOf(w))}</td>
       <td><input class="tracker-input" type="number" step="0.1" placeholder="e.g. 8.2" value="${d.sprint}" oninput="updateTracker(${i},'sprint',this.value)"></td>
@@ -1041,7 +1205,36 @@ function renderTracker() {
       <td><input class="tracker-input note-input" type="text" placeholder="note..." value="${d.note}" oninput="updateTracker(${i},'note',this.value)"></td>
     </tr>`;
   }
-  document.getElementById('tracker-body').innerHTML = html;
+  document.getElementById('tracker-body').innerHTML = tableHtml;
+
+  // Mobile cards
+  let cardsHtml = '';
+  for (let i = 0; i < 15; i++) {
+    const w = i+1;
+    const d = trackerData[i];
+    cardsHtml += `<div class="tracker-card-row${i===currentWk?' current-week':''}">
+      <div class="tcr-header">
+        <div class="tcr-wk">${w}</div>
+        ${phaseTag(phaseOf(w))}
+      </div>
+      <div class="tcr-fields">
+        <div class="tcr-field">
+          <span class="tcr-label">Sprint (sec)</span>
+          <input class="tcr-input" type="number" step="0.1" placeholder="e.g. 8.2" value="${d.sprint}" inputmode="decimal" oninput="updateTracker(${i},'sprint',this.value)">
+        </div>
+        <div class="tcr-field">
+          <span class="tcr-label">Solid hits / 10</span>
+          <input class="tcr-input" type="number" min="0" max="10" placeholder="e.g. 7" value="${d.hits}" inputmode="numeric" oninput="updateTracker(${i},'hits',this.value)">
+        </div>
+        <div class="tcr-field tcr-note">
+          <span class="tcr-label">Notes</span>
+          <input class="tcr-input" type="text" placeholder="e.g. great session" value="${d.note}" oninput="updateTracker(${i},'note',this.value)">
+        </div>
+      </div>
+    </div>`;
+  }
+  document.getElementById('tracker-cards').innerHTML = cardsHtml;
+
   updateTrackerStats();
 }
 
