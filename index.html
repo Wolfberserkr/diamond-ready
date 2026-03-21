@@ -870,7 +870,7 @@ function previewProfile() {
   document.getElementById('profile-jersey-display').textContent = jersey ? '#'+jersey : '#';
 
   // Update hero
-  document.getElementById('hero-name').textContent = first || 'Game Ready';
+  document.getElementById('hero-name').textContent = (first ? first + ' Ready' : 'Game Ready');
   const eyebrow = ['Tournament Prep', age ? 'Age '+age : null, pos || null, 'July 2026'].filter(Boolean).join(' · ');
   document.getElementById('hero-eyebrow').textContent = eyebrow;
 }
