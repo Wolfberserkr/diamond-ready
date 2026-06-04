@@ -1,0 +1,18 @@
+{
+  "name": "aruba-booking",
+  "private": true,
+  "version": "0.1.0",
+  "description": "WhatsApp-integrated booking and deposit tool for Aruba tourism micro-vendors.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "test:shared": "npm run test -w @aruba/shared",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

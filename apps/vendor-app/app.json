@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "Aruba Bookings",
+    "slug": "aruba-bookings-vendor",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "arubabookings",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.aruba.bookings.vendor"
+    },
+    "android": {
+      "package": "com.aruba.bookings.vendor"
+    },
+    "plugins": [
+      "expo-notifications"
+    ]
+  }
+}
