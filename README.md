@@ -16,8 +16,6 @@ supabase/
   functions/       Edge Functions (Deno / TypeScript)
 packages/
   shared/          Zod schemas, fee math, WhatsApp templates, i18n strings
-archive/
-  baseball-landing/  Pre-existing unrelated static page, preserved for history
 ```
 
 ## Quick start
