@@ -1,52 +1,27 @@
-# Local-development config for `supabase start`. Real project settings live
-# in the Supabase dashboard for the deployed environment.
-
-project_id = "aruba-booking"
+project_id = "competitor-intel"
 
 [api]
-enabled = true
 port = 54321
 schemas = ["public"]
-extra_search_path = ["public", "extensions"]
+extra_search_path = ["public"]
 max_rows = 1000
 
 [db]
 port = 54322
-shadow_port = 54320
-major_version = 15
 
 [studio]
-enabled = true
 port = 54323
 
 [auth]
-enabled = true
 site_url = "http://localhost:3000"
-additional_redirect_urls = ["http://localhost:3000"]
+additional_redirect_urls = ["http://localhost:3000/auth/callback"]
 jwt_expiry = 3600
 enable_signup = true
 
-[auth.sms]
+[auth.email]
 enable_signup = true
+double_confirm_changes = true
 enable_confirmations = false
 
-# Phone OTP for vendors. The provider config (Twilio etc.) is set per
-# environment via env vars, not committed here.
-
-[functions.bookings-create]
-verify_jwt = true
-
-[functions.bookings-get-public]
-verify_jwt = false
-
-[functions.bookings-complete]
-verify_jwt = true
-
-[functions.bookings-cancel]
-verify_jwt = true
-
-[functions.stripe-webhook]
-verify_jwt = false
-
-[functions.payouts-run]
-verify_jwt = true
+[storage]
+file_size_limit = "10MiB"
