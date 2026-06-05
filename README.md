@@ -1,55 +1,80 @@
-# Aruba WhatsApp Booking & Deposit Tool
+# Competitor Intelligence Reports
 
-WhatsApp-native booking and deposit infrastructure for Aruba's tourism micro-vendors — boat tours, jeep safaris, dive operators, independent guides, snorkel rentals. The vendor pastes a payment-linked confirmation into their existing WhatsApp chat; the tourist taps through to a mobile booking page and pays. We charge 2–3% per completed booking.
+SaaS that emails small businesses a monthly intelligence report on their competitors: pricing changes, new promotions, new services, and recent customer complaints.
 
-The full build plan, decisions, and verification steps live in `docs/PLAN.md`.
+Launch vertical: local home services (HVAC contractors first). The pipeline is templated so re-targeting plumbers, electricians, landscapers, etc. is a config change rather than a code change.
+
+## How it works
+
+1. A small-business owner pays €99/mo via Mollie Checkout.
+2. They log in via a magic link, add 3–5 competitors (website URLs).
+3. The system scrapes each competitor's site with Playwright, pulls reviews from the Google Places API, and uses Claude to extract structured findings.
+4. A diff against the previous month flags what's `new` / `changed` / `removed`.
+5. Customer gets an email summary with a magic link to the full web report.
+6. A Vercel cron at the 1st of each month regenerates every active subscriber's report.
+
+## Stack
+
+- Next.js 15 (App Router) on Vercel
+- Supabase (Postgres + Auth + Storage)
+- Mollie (subscription billing — chosen because Stripe is not available to Aruba-based merchants)
+- Playwright (competitor scraping)
+- Anthropic Claude (structured extraction)
+- Google Places API (reviews)
+- Resend (transactional email)
 
 ## Repo layout
 
 ```
-apps/
-  vendor-app/      Expo / React Native — vendor mobile app (iOS + Android)
-  booking-web/     Next.js — tourist-facing booking and confirmation pages
-  ops/             Next.js — internal admin (vendor onboarding, payouts, refunds)
+app/                Next.js App Router
+  page.tsx          Marketing landing
+  pricing/          Pricing
+  signup/           Mollie checkout entry
+  dashboard/        Authed: competitors + billing
+  r/[reportId]/     Public magic-link report viewer
+  api/              Mollie webhook, cron, generate-report
+lib/
+  scrape/           Playwright runners + URL candidate selection
+  reviews/          Google Places client + complaint clustering
+  llm/              Claude extraction prompts
+  reports/          Pipeline + month-over-month diff
+  email/            Resend templates
+  mollie/           Mollie client + webhook handlers
+  supabase/         Server / browser / admin clients
 supabase/
-  migrations/      Postgres schema + RLS
-  functions/       Edge Functions (Deno / TypeScript)
-packages/
-  shared/          Zod schemas, fee math, WhatsApp templates, i18n strings
+  migrations/       Schema + RLS
 ```
 
 ## Quick start
 
 ```bash
-# Install (npm workspaces)
+cp .env.example .env.local   # fill in keys
 npm install
+npx playwright install chromium
 
-# Run the shared-package tests (fee math, template generation, validators)
-npm run test:shared
-
-# Typecheck everything
-npm run typecheck
-
-# Local Supabase + Edge Functions
+# Postgres (locally via Supabase CLI)
 supabase start
-supabase functions serve
+supabase db reset            # applies migrations
 
-# Tourist booking page
-npm run dev -w apps/booking-web
-
-# Vendor app (Expo)
-npm run start -w apps/vendor-app
+npm run dev                  # http://localhost:3000
 ```
 
-Copy `.env.example` to `.env` and fill in Supabase + Stripe keys before running anything that touches the network.
+Run the suite:
 
-## Decisions baked into v1
+```bash
+npm run typecheck
+npm run test
+```
 
-- **Platform as merchant of record**, Stripe as processor. Vendor payouts are off-Stripe (weekly bank transfer via ops CSV).
-- **Web confirmation page only** for tourist receipt — no Twilio/WhatsApp Business API on the critical path.
-- **Link-only discovery.** No public vendor directory. We are infrastructure, not a marketplace.
-- **Languages:** EN / ES / NL for the tourist page; EN / ES for the vendor app at launch.
+## End-to-end verification
 
-## Launch window
-
-In-person vendor onboarding starts November 2026. Target: 40 active vendors by April 2027.
+1. `npm run dev`, visit `/`, click subscribe → Mollie test card → return to `/dashboard`.
+2. Add two real local HVAC competitor URLs.
+3. Click **Generate first report**. Watch the `reports` row flip to `ready`.
+4. Open the magic-link email (Resend test inbox) → confirm pricing / promotions / services / complaints sections render.
+5. Trigger the cron a second time:
+   ```bash
+   curl -X POST http://localhost:3000/api/cron/monthly \
+     -H "x-cron-secret: $CRON_SECRET"
+   ```
+   A second `reports` row should be created with `change_vs_previous` flags populated against month 1.
